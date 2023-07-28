@@ -1,0 +1,15 @@
+{
+    "name": "john/payment-module",
+    "autoload": {
+        "psr-4": {
+            "John\\PaymentModule\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "JohnZCastillo",
+            "email": "johnzunigacastillo@gmail.com"
+        }
+    ],
+    "require": {}
+}
