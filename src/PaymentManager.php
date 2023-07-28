@@ -46,9 +46,9 @@ class PaymentManager {
      * @throws UserAlreadyPaidException If the user has already paid for the specified date range.
      * @throws InsufficientAmountException If the current due amount is insufficient for the payment.
      */
-    public function pay(PaymentModel $payment) {
-        $this->paymentValidation($payment);
-        $this->paymentService->pay($payment);
+    public function pay(PaymentModel $payment, UserModel $user) {
+        $this->paymentValidation($payment, $user);
+        $this->paymentService->pay($payment, $user);
     }
 
     /**
@@ -61,7 +61,7 @@ class PaymentManager {
      * @param UserModel $model The user model representing the user for whom unpaid dues are fetched.
      * @return array An array containing the details of unpaid dues. Each element in the array has the 'month' and 'amount' keys.
      */
-    public function getUnpaidDues(UserModel $model) {
+    public function getUnpaidDues(UserModel $model, UserModel $user) {
 
         $paymentDue = $this->paymentDue;
         $paymentService = $this->paymentService;
@@ -74,7 +74,7 @@ class PaymentManager {
 
         foreach ($months as $month) {
 
-            if ($paymentService->isPaid($month, $month)) {
+            if ($paymentService->isPaid($user, $month, $month)) {
                 continue;
             }
 
@@ -97,7 +97,7 @@ class PaymentManager {
      * @param UserModel $model The user model representing the user for whom paid dues are fetched.
      * @return array An array containing the details of paid dues. Each element in the array has the 'month' and 'amount' keys.
      */
-    public function getPaidDues(UserModel $model) {
+    public function getPaidDues(UserModel $user) {
 
         $paymentDue = $this->paymentDue;
         $paymentService = $this->paymentService;
@@ -110,7 +110,7 @@ class PaymentManager {
 
         foreach ($months as $month) {
 
-            if (!$paymentService->isPaid($month, $month)) {
+            if (!$paymentService->isPaid($user, $month, $month)) {
                 continue;
             }
 
@@ -134,7 +134,7 @@ class PaymentManager {
      * @throws UserAlreadyPaidException If the user has already paid for the specified date range.
      * @throws InsufficientAmountException If the current due amount is insufficient for the payment.
      */
-    private function paymentValidation(PaymentModel $payment) {
+    private function paymentValidation(PaymentModel $payment, UserModel $user) {
 
         $from = $payment->getFromDue();
         $to = $payment->getToDue();
@@ -146,7 +146,7 @@ class PaymentManager {
 
         $currentDue = $paymentDue->getDueFor($from, $to);
 
-        if ($paymentService->isPaid($from, $to)) {
+        if ($paymentService->isPaid($user, $from, $to)) {
             throw new UserAlreadyPaidException();
         }
 

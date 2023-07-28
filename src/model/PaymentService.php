@@ -13,7 +13,7 @@ interface PaymentService {
      * @param PaymentModel $paymentModel The payment model representing the payment to be processed.
      * @return void
      */
-    public function pay(PaymentModel $paymentModel);
+    public function pay(PaymentModel $paymentModel, UserModel $user);
 
     /**
      * Check if the current payment is paid for a specific month.
@@ -21,5 +21,5 @@ interface PaymentService {
      * @param int $month The month for which the payment status should be checked (1 to 12).
      * @return bool True if the payment is paid for the specified month, false otherwise.
      */
-    public function isPaid($from,$to): bool;
+    public function isPaid(UserModel $user,$from,$to): bool;
 }
